@@ -95,6 +95,16 @@ jobs:
           echo "Running: pnpm e2e ${{ inputs.environment }}:${{ inputs.suite }}:${{ inputs.browser }}"
           pnpm e2e ${{ inputs.environment }}:${{ inputs.suite }}:${{ inputs.browser }} || true
 
+      - name: Generate Allure results
+        if: always()
+        working-directory: e2e
+        run: pnpm exec allure generate output/allure-results --clean -o output/allure-report || true
+
+      - name: Run Allure report
+        if: always()
+        working-directory: e2e
+        run: pnpm exec allure generate output/allure-results --clean -o output/allure-report || true
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -102,7 +112,6 @@ jobs:
           name: test-results-${{ inputs.suite }}-${{ inputs.browser }}
           path: |
             e2e/output/
-            e2e/allure-results/
           retention-days: 30
 
       - name: Get Allure history

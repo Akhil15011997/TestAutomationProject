@@ -95,11 +95,6 @@ jobs:
           echo "Running: pnpm e2e ${{ inputs.environment }}:${{ inputs.suite }}:${{ inputs.browser }}"
           pnpm e2e ${{ inputs.environment }}:${{ inputs.suite }}:${{ inputs.browser }} || true
 
-      - name: Generate Allure results
-        if: always()
-        working-directory: e2e
-        run: pnpm exec allure generate output/allure-results --clean -o output/allure-report || true
-
       - name: Run Allure report
         if: always()
         working-directory: e2e

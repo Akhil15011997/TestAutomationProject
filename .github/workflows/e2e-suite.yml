@@ -93,7 +93,7 @@ jobs:
           mailgun-mock-mode: ${{ secrets.MAILGUN_SENDING_API_KEY != '' && 'false' || 'true' }}
         run: |
           echo "Running: pnpm e2e ${{ inputs.environment }}:${{ inputs.suite }}:${{ inputs.browser }}"
-          pnpm e2e ${{ inputs.environment }}:${{ inputs.suite }}:${{ inputs.browser }} || true
+          pnpm e2e ${{ inputs.environment }}:${{ inputs.suite }}:${{ inputs.browser }}
 
       - name: Run Allure report
         if: always()

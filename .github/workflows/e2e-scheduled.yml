@@ -112,7 +112,12 @@ jobs:
           mailgun-mock-mode: ${{ secrets.MAILGUN_SENDING_API_KEY != '' && 'false' || 'true' }}
         run: |
           echo "Running scheduled tests for suite: ${{ matrix.suite }}"
-          pnpm e2e:parallel staging:@${{ matrix.suite }}:chromeHeadless 4 || true
+          pnpm e2e:parallel staging:@${{ matrix.suite }}:chromeHeadless 4
+      
+      - name: Run Allure report
+        if: always()
+        working-directory: e2e
+        run: pnpm exec allure generate output/allure-results --clean -o output/allure-report || true
 
       - name: Upload test results
         if: always()

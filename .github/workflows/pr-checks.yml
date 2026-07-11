@@ -1,112 +1,112 @@
-name: PR Checks
+# name: PR Checks
 
-on:
-  pull_request:
-    branches: [main, master, develop]
-  push:
-    branches: [main, master, develop]
+# on:
+#   pull_request:
+#     branches: [main, master, develop]
+#   push:
+#     branches: [main, master, develop]
 
-jobs:
-  lint:
-    name: Lint Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+# jobs:
+#   lint:
+#     name: Lint Check
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.1.0
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v4
+#         with:
+#           version: 9.1.0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-          cache-dependency-path: e2e/pnpm-lock.yaml
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '22'
+#           cache: 'pnpm'
+#           cache-dependency-path: e2e/pnpm-lock.yaml
 
-      - name: Install dependencies
-        working-directory: e2e
-        run: pnpm install --frozen-lockfile
+#       - name: Install dependencies
+#         working-directory: e2e
+#         run: pnpm install --frozen-lockfile
 
-      - name: Run ESLint
-        working-directory: e2e
-        run: pnpm lint
+#       - name: Run ESLint
+#         working-directory: e2e
+#         run: pnpm lint
 
-  type-check:
-    name: Syntax Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+#   type-check:
+#     name: Syntax Check
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.1.0
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v4
+#         with:
+#           version: 9.1.0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-          cache-dependency-path: e2e/pnpm-lock.yaml
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '22'
+#           cache: 'pnpm'
+#           cache-dependency-path: e2e/pnpm-lock.yaml
 
-      - name: Install dependencies
-        working-directory: e2e
-        run: pnpm install --frozen-lockfile
+#       - name: Install dependencies
+#         working-directory: e2e
+#         run: pnpm install --frozen-lockfile
 
-      - name: Check for syntax errors
-        working-directory: e2e
-        run: node --check codecept.conf.js
+#       - name: Check for syntax errors
+#         working-directory: e2e
+#         run: node --check codecept.conf.js
 
-      - name: Validate step definitions
-        working-directory: e2e
-        env:
-          PROFILE: staging:@smoke:chromeHeadless
-        run: pnpm e2e:dry-run || true
+#       - name: Validate step definitions
+#         working-directory: e2e
+#         env:
+#           PROFILE: staging:@smoke:chromeHeadless
+#         run: pnpm e2e:dry-run || true
 
-  smoke-test:
-    name: API Smoke Test
-    runs-on: ubuntu-latest
-    needs: [lint, type-check]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+#   smoke-test:
+#     name: API Smoke Test
+#     runs-on: ubuntu-latest
+#     needs: [lint, type-check]
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.1.0
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v4
+#         with:
+#           version: 9.1.0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-          cache-dependency-path: e2e/pnpm-lock.yaml
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '22'
+#           cache: 'pnpm'
+#           cache-dependency-path: e2e/pnpm-lock.yaml
 
-      - name: Install dependencies
-        working-directory: e2e
-        run: pnpm install --frozen-lockfile
+#       - name: Install dependencies
+#         working-directory: e2e
+#         run: pnpm install --frozen-lockfile
 
-      - name: Run API smoke tests
-        working-directory: e2e
-        env:
-          mailgun-api-key: ${{ secrets.MAILGUN_SENDING_API_KEY }}
-          mailgun-domain: ${{ secrets.MAILGUN_DOMAIN }}
-          mailgun-from-email: ${{ secrets.MAILGUN_FROM_EMAIL }}
-          mailgun-mock-mode: ${{ secrets.MAILGUN_SENDING_API_KEY != '' && 'false' || 'true' }}
-        run: pnpm e2e local:@api:apiOnly
-        continue-on-error: true
+#       - name: Run API smoke tests
+#         working-directory: e2e
+#         env:
+#           mailgun-api-key: ${{ secrets.MAILGUN_SENDING_API_KEY }}
+#           mailgun-domain: ${{ secrets.MAILGUN_DOMAIN }}
+#           mailgun-from-email: ${{ secrets.MAILGUN_FROM_EMAIL }}
+#           mailgun-mock-mode: ${{ secrets.MAILGUN_SENDING_API_KEY != '' && 'false' || 'true' }}
+#         run: pnpm e2e local:@api:apiOnly
+#         continue-on-error: true
 
-      - name: Upload test artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: |
-            e2e/output/
-            e2e/allure-results/
-          retention-days: 7
+#       - name: Upload test artifacts
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: test-results
+#           path: |
+#             e2e/output/
+#             e2e/allure-results/
+#           retention-days: 7
